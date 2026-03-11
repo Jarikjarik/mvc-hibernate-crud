@@ -4,9 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.javamentor</groupId>
-    <artifactId>spring-mvc</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>io.github.jarikjarik</groupId>
+    <artifactId>mvc-hibernate-crud</artifactId>
+    <version>1.0.0</version>
+    <name>MVC Hibernate CRUD</name>
+    <description>Portfolio Spring MVC application for user management with PostgreSQL and Flyway.</description>
 
     <packaging>war</packaging>
 
@@ -73,7 +75,7 @@
     </dependencies>
 
     <build>
-        <finalName>Spring_MVC</finalName>
+        <finalName>mvc-hibernate-crud</finalName>
 
         <plugins>
             <plugin>
@@ -88,7 +90,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <warSourceDirectory>src/webapp</warSourceDirectory>
-                    <warName>spring_mvc</warName>
+                    <warName>mvc-hibernate-crud</warName>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>

@@ -61,6 +61,15 @@ Production-like portfolio CRUD application for user management built with Spring
 - Testcontainers
 - GitHub Actions
 
+## User flows
+
+- `GET /users` - user directory with search, sorting and pagination
+- `GET /users/new` - create form
+- `POST /users` - create user
+- `GET /users/edit?id={id}` - edit form
+- `POST /users/edit` - update user
+- `POST /users/delete` - delete user
+
 ## Architecture
 
 ```mermaid
@@ -79,15 +88,6 @@ Responsibilities by layer:
 - services contain business rules and guard clauses
 - DAO classes execute persistence queries
 - Flyway owns schema evolution instead of Hibernate schema mutation
-
-## User flows
-
-- `GET /users` - user directory with search, sorting and pagination
-- `GET /users/new` - create form
-- `POST /users` - create user
-- `GET /users/edit?id={id}` - edit form
-- `POST /users/edit` - update user
-- `POST /users/delete` - delete user
 
 ## Project structure
 

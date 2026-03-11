@@ -21,6 +21,7 @@
         <postgresql.version>42.7.7</postgresql.version>
         <hibernate.validator.version>6.1.6.Final</hibernate.validator.version>
         <flyway.version>11.7.2</flyway.version>
+        <logback.version>1.2.13</logback.version>
     </properties>
 
     <dependencies>
@@ -70,6 +71,18 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
     </dependencies>

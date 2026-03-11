@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: mvc-hibernate-crud-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mvc-hibernate-crud}
+      POSTGRES_USER: ${POSTGRES_USER:-app_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-12345}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app_user} -d ${POSTGRES_DB:-mvc-hibernate-crud}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mvc-hibernate-crud-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_DRIVER: ${DB_DRIVER:-org.postgresql.Driver}
+      DB_URL: ${DB_URL:-jdbc:postgresql://db:5432/mvc-hibernate-crud}
+      DB_USERNAME: ${DB_USERNAME:-app_user}
+      DB_PASSWORD: ${DB_PASSWORD:-12345}
+      HIBERNATE_SHOW_SQL: ${HIBERNATE_SHOW_SQL:-true}
+      HIBERNATE_HBM2DDL_AUTO: ${HIBERNATE_HBM2DDL_AUTO:-validate}
+      HIBERNATE_FORMAT_SQL: ${HIBERNATE_FORMAT_SQL:-true}
+      HIBERNATE_DIALECT: ${HIBERNATE_DIALECT:-org.hibernate.dialect.PostgreSQL10Dialect}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+
+volumes:
+  postgres-data:

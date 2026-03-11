@@ -1,0 +1,11 @@
+# PostgreSQL properties
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/your_database
+db.username=your_username
+db.password=your_password
+
+# Hibernate properties
+hibernate.show_sql=true
+hibernate.hbm2ddl.auto=validate
+hibernate.format_sql=true
+hibernate.dialect=org.hibernate.dialect.PostgreSQL10Dialect

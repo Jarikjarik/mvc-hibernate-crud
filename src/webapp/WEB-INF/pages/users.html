@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Directory</title>
+    <link rel="stylesheet" th:href="@{/resources/css/app.css}">
+</head>
+<body>
+<main class="page-shell">
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Portfolio project</p>
+                <h1>User Directory</h1>
+                <p class="panel-subtitle">Manage employees with validation, audit fields and PostgreSQL persistence.</p>
+            </div>
+            <a class="button button-primary" th:href="@{/users/new}">Add user</a>
+        </div>
+
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+        <div class="table-wrapper" th:if="${!users.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Email</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.surname}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.createdAtFormatted}"></td>
+                    <td th:text="${user.updatedAtFormatted}"></td>
+                    <td class="actions">
+                        <a class="button button-secondary" th:href="@{/users/edit(id=${user.id})}">Edit</a>
+                        <form method="post" th:action="@{/users/delete}">
+                            <input type="hidden" name="id" th:value="${user.id}">
+                            <button class="button button-danger" type="submit"
+                                    onclick="return confirm('Delete this user?');">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" th:if="${users.isEmpty()}">
+            <h2>No users yet</h2>
+            <p>Create the first record to populate the directory.</p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

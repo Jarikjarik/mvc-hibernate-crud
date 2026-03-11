@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/resources/css/app.css}">
+</head>
+<body>
+<main class="page-shell">
+    <section class="panel error-panel">
+        <p class="eyebrow">Request failed</p>
+        <h1>Unable to complete the action</h1>
+        <p class="panel-subtitle" th:text="${errorMessage}">Something went wrong.</p>
+        <a class="button button-primary" th:href="@{/users}">Return to user list</a>
+    </section>
+</main>
+</body>
+</html>

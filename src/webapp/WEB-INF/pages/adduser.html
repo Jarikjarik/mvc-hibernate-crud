@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <link rel="stylesheet" th:href="@{/resources/css/app.css}">
+</head>
+<body>
+<main class="page-shell">
+    <section class="panel form-panel">
+        <div class="panel-header panel-header-compact">
+            <div>
+                <p class="eyebrow">Create record</p>
+                <h1>Add user</h1>
+            </div>
+            <a class="button button-secondary" th:href="@{/users}">Back to list</a>
+        </div>
+
+        <form class="form-grid" th:action="@{/users}" th:object="${user}" method="post">
+            <label class="field">
+                <span>Name</span>
+                <input type="text" th:field="*{name}" placeholder="John">
+                <small class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+            </label>
+
+            <label class="field">
+                <span>Surname</span>
+                <input type="text" th:field="*{surname}" placeholder="Doe">
+                <small class="error-message" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></small>
+            </label>
+
+            <label class="field field-full">
+                <span>Email</span>
+                <input type="email" th:field="*{email}" placeholder="john.doe@company.com">
+                <small class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+            </label>
+
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">Create user</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

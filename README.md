@@ -135,13 +135,28 @@ Covered scenarios include:
 - MVC controller flow
 - root redirect behavior
 
+Optional PostgreSQL integration tests are also available through Testcontainers:
+
+```bash
+./mvnw verify -Pintegration-tests
+```
+
+For Windows PowerShell:
+
+```powershell
+.\mvnw.cmd verify -Pintegration-tests
+```
+
+These tests require Docker to be running locally.
+
 ## Continuous integration
 
 GitHub Actions runs the following on every push and pull request to `main`:
 
 - Maven dependency restore
 - project build
-- automated test suite
+- unit and MVC test suite
+- PostgreSQL integration tests with Testcontainers
 
 ## Flyway migrations
 
@@ -193,10 +208,10 @@ The project has been upgraded from a basic educational CRUD toward a more produc
 - managed seed data and explicit database reset flow
 - reproducible build via Maven Wrapper
 - automated test coverage for service and MVC layers
+- optional PostgreSQL integration tests with Testcontainers
 - GitHub Actions build validation
 - containerized local environment via Docker Compose
 
 ## Next improvements
 
-- add PostgreSQL integration tests with Testcontainers
 - add search, sorting and pagination

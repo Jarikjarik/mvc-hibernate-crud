@@ -1,8 +1,8 @@
-# PostgreSQL properties
+# Local PostgreSQL properties
 db.driver=org.postgresql.Driver
-db.url=jdbc:postgresql://localhost:5432/your_database
-db.username=your_username
-db.password=your_password
+db.url=jdbc:postgresql://localhost:5432/mvc-hibernate-crud
+db.username=app_user
+db.password=12345
 db.maxPoolSize=10
 db.minIdle=2
 db.connectionTimeoutMs=30000

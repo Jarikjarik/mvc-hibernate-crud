@@ -40,3 +40,4 @@ build/
 
 ### Local env ###
 .env
+src/main/resources/db.local.properties

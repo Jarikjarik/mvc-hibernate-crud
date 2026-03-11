@@ -9,6 +9,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -122,14 +123,17 @@ class UserDaoImplIT {
         @Override
         public void initialize(ConfigurableApplicationContext applicationContext) {
             POSTGRESQL_CONTAINER.start();
-            System.setProperty("DB_DRIVER", "org.postgresql.Driver");
-            System.setProperty("DB_URL", POSTGRESQL_CONTAINER.getJdbcUrl());
-            System.setProperty("DB_USERNAME", POSTGRESQL_CONTAINER.getUsername());
-            System.setProperty("DB_PASSWORD", POSTGRESQL_CONTAINER.getPassword());
-            System.setProperty("HIBERNATE_SHOW_SQL", "false");
-            System.setProperty("HIBERNATE_HBM2DDL_AUTO", "validate");
-            System.setProperty("HIBERNATE_FORMAT_SQL", "false");
-            System.setProperty("HIBERNATE_DIALECT", "org.hibernate.dialect.PostgreSQL10Dialect");
+            TestPropertySourceUtils.addInlinedPropertiesToEnvironment(
+                    applicationContext,
+                    "DB_DRIVER=org.postgresql.Driver",
+                    "DB_URL=" + POSTGRESQL_CONTAINER.getJdbcUrl(),
+                    "DB_USERNAME=" + POSTGRESQL_CONTAINER.getUsername(),
+                    "DB_PASSWORD=" + POSTGRESQL_CONTAINER.getPassword(),
+                    "HIBERNATE_SHOW_SQL=false",
+                    "HIBERNATE_HBM2DDL_AUTO=validate",
+                    "HIBERNATE_FORMAT_SQL=false",
+                    "HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQL10Dialect"
+            );
         }
     }
 }

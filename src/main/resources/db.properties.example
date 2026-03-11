@@ -3,6 +3,9 @@ db.driver=org.postgresql.Driver
 db.url=jdbc:postgresql://localhost:5432/your_database
 db.username=your_username
 db.password=your_password
+db.maxPoolSize=10
+db.minIdle=2
+db.connectionTimeoutMs=30000
 
 # Hibernate properties
 hibernate.show_sql=true

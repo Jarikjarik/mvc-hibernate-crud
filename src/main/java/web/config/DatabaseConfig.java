@@ -1,5 +1,7 @@
 package web.config;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import web.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -17,7 +19,10 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:db.properties")
+@PropertySources({
+        @PropertySource("classpath:db.properties"),
+        @PropertySource(value = "classpath:db.local.properties", ignoreResourceNotFound = true)
+})
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"web.service", "web.dao"})
 public class DatabaseConfig {
@@ -31,13 +36,17 @@ public class DatabaseConfig {
 
     @Bean
     public DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(getRequiredProperty("DB_DRIVER", "db.driver"));
-        dataSource.setUrl(getRequiredProperty("DB_URL", "db.url"));
-        dataSource.setUsername(getRequiredProperty("DB_USERNAME", "db.username"));
-        dataSource.setPassword(getRequiredProperty("DB_PASSWORD", "db.password"));
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setDriverClassName(getRequiredProperty("DB_DRIVER", "db.driver"));
+        hikariConfig.setJdbcUrl(getRequiredProperty("DB_URL", "db.url"));
+        hikariConfig.setUsername(getRequiredProperty("DB_USERNAME", "db.username"));
+        hikariConfig.setPassword(getRequiredProperty("DB_PASSWORD", "db.password"));
+        hikariConfig.setPoolName("mvc-hibernate-crud-pool");
+        hikariConfig.setMaximumPoolSize(getIntProperty("DB_MAX_POOL_SIZE", "db.maxPoolSize", 10));
+        hikariConfig.setMinimumIdle(getIntProperty("DB_MIN_IDLE", "db.minIdle", 2));
+        hikariConfig.setConnectionTimeout(getLongProperty("DB_CONNECTION_TIMEOUT_MS", "db.connectionTimeoutMs", 30000L));
 
-        return dataSource;
+        return new HikariDataSource(hikariConfig);
     }
 
     @Bean(initMethod = "migrate")
@@ -83,5 +92,27 @@ public class DatabaseConfig {
             throw new IllegalStateException("Missing required configuration property: " + propertyKey);
         }
         return value;
+    }
+
+    private int getIntProperty(String envKey, String propertyKey, int defaultValue) {
+        String value = env.getProperty(envKey);
+        if (value == null || value.isBlank()) {
+            value = env.getProperty(propertyKey);
+        }
+        if (value == null || value.isBlank()) {
+            return defaultValue;
+        }
+        return Integer.parseInt(value);
+    }
+
+    private long getLongProperty(String envKey, String propertyKey, long defaultValue) {
+        String value = env.getProperty(envKey);
+        if (value == null || value.isBlank()) {
+            value = env.getProperty(propertyKey);
+        }
+        if (value == null || value.isBlank()) {
+            return defaultValue;
+        }
+        return Long.parseLong(value);
     }
 }

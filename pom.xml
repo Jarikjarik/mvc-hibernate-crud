@@ -21,6 +21,7 @@
         <postgresql.version>42.7.7</postgresql.version>
         <hibernate.validator.version>6.1.6.Final</hibernate.validator.version>
         <flyway.version>11.7.2</flyway.version>
+        <hikari.version>5.1.0</hikari.version>
         <logback.version>1.2.13</logback.version>
         <junit.version>5.11.4</junit.version>
         <mockito.version>5.15.2</mockito.version>
@@ -87,6 +88,12 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
             <version>${flyway.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikari.version}</version>
         </dependency>
 
         <dependency>

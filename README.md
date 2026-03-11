@@ -11,6 +11,7 @@ It now demonstrates:
 - classic layered Spring MVC architecture
 - explicit database versioning with Flyway
 - PostgreSQL-based persistence
+- HikariCP connection pooling
 - MVC, service and integration test coverage
 - reproducible local setup with Maven Wrapper and Docker Compose
 - CI validation with GitHub Actions
@@ -54,6 +55,7 @@ src/main/java/web
 
 src/main/resources
   db.properties
+  db.local.properties.example
   db/migration
 
 src/webapp
@@ -96,32 +98,42 @@ Main pages and actions:
 
 ## Database configuration
 
-Local fallback configuration is stored in `src/main/resources/db.properties`.
-The application also supports environment variable overrides for Docker and CI:
+Tracked fallback configuration is stored in `src/main/resources/db.properties`.
+It contains safe placeholder values only.
+
+For local development you can either:
+
+- provide environment variables
+- or copy `src/main/resources/db.local.properties.example` to `src/main/resources/db.local.properties`
+
+Configuration is resolved in this order:
+
+- environment variables
+- local untracked `db.local.properties`
+- tracked placeholder `db.properties`
+
+Supported overrides for Docker, CI or local shell setup:
 
 - `DB_DRIVER`
 - `DB_URL`
 - `DB_USERNAME`
 - `DB_PASSWORD`
+- `DB_MAX_POOL_SIZE`
+- `DB_MIN_IDLE`
+- `DB_CONNECTION_TIMEOUT_MS`
 - `HIBERNATE_SHOW_SQL`
 - `HIBERNATE_HBM2DDL_AUTO`
 - `HIBERNATE_FORMAT_SQL`
 - `HIBERNATE_DIALECT`
 
-Current local settings:
-
-- database: `mvc-hibernate-crud`
-- username: `app_user`
-- password: `12345`
-- url: `jdbc:postgresql://localhost:5432/mvc-hibernate-crud`
-
-For sharing or future deployment use `src/main/resources/db.properties.example` as a template.
+For local machine setup use `src/main/resources/db.local.properties.example` as a template.
 
 ## Run locally
 
 1. Make sure PostgreSQL is running and the database `mvc-hibernate-crud` exists.
 2. Ensure the user `app_user` with password `12345` has access to that database.
-3. Build the project with Maven Wrapper:
+3. Copy `src/main/resources/db.local.properties.example` to `src/main/resources/db.local.properties`.
+4. Build the project with Maven Wrapper:
 
 ```bash
 ./mvnw clean package
@@ -133,8 +145,8 @@ For Windows PowerShell:
 .\mvnw.cmd clean package
 ```
 
-4. Deploy the generated WAR from `target/mvc-hibernate-crud.war` to your servlet container.
-5. Open:
+5. Deploy the generated WAR from `target/mvc-hibernate-crud.war` to your servlet container.
+6. Open:
 
 ```text
 http://localhost:8080/mvc-hibernate-crud/users
@@ -225,6 +237,7 @@ Signals that this is no longer a tutorial-only CRUD:
 
 - PostgreSQL replaced the original training setup
 - schema changes are handled through Flyway migrations
+- connection management uses HikariCP
 - local environment is reproducible with Maven Wrapper and Docker Compose
 - CI verifies build and tests on every push and pull request
 - DAO behavior is checked against PostgreSQL with Testcontainers

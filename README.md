@@ -161,6 +161,20 @@ The Docker setup runs:
 - Flyway migrations on application startup
 - Tomcat with the built WAR deployed as the root app
 
+## Screenshots
+
+### User directory
+
+![User directory](docs/screenshots/user-directory.png)
+
+### Create user
+
+![Create user](docs/screenshots/create-user.png)
+
+### Edit user
+
+![Edit user](docs/screenshots/edit-user.png)
+
 ## Testing
 
 Run the automated test suite with Maven Wrapper:
@@ -273,6 +287,5 @@ The project has been upgraded from a basic educational CRUD toward a more produc
 
 ## Next improvements
 
-- add screenshots or demo GIFs to the repository
 - add bulk actions or richer directory filters
 - add deployment instructions for a public demo environment

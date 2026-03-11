@@ -23,6 +23,8 @@ Portfolio web application for user management built with Spring MVC, Hibernate, 
 - Maven Wrapper
 - Docker Compose
 - Maven WAR packaging
+- JUnit 5 and Mockito
+- GitHub Actions CI
 
 ## Project structure
 
@@ -113,6 +115,34 @@ The Docker setup runs:
 - Flyway migrations on application startup
 - Tomcat with the built WAR deployed as the root app
 
+## Testing
+
+Run the automated test suite with Maven Wrapper:
+
+```bash
+./mvnw test
+```
+
+For Windows PowerShell:
+
+```powershell
+.\mvnw.cmd test
+```
+
+Covered scenarios include:
+
+- service-layer behavior
+- MVC controller flow
+- root redirect behavior
+
+## Continuous integration
+
+GitHub Actions runs the following on every push and pull request to `main`:
+
+- Maven dependency restore
+- project build
+- automated test suite
+
 ## Flyway migrations
 
 Schema migrations are stored in:
@@ -162,10 +192,11 @@ The project has been upgraded from a basic educational CRUD toward a more produc
 - explicit database migration instead of implicit schema mutation
 - managed seed data and explicit database reset flow
 - reproducible build via Maven Wrapper
+- automated test coverage for service and MVC layers
+- GitHub Actions build validation
 - containerized local environment via Docker Compose
 
 ## Next improvements
 
-- add unit and integration tests
-- add GitHub Actions CI
+- add PostgreSQL integration tests with Testcontainers
 - add search, sorting and pagination

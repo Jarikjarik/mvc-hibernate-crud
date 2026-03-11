@@ -47,12 +47,36 @@ class UserControllerTest {
 
     @Test
     void getAllUsersShouldRenderUsersPage() throws Exception {
-        when(userService.getUsers()).thenReturn(List.of(buildUser(1L, "Ivan", "Petrov", "ivan@example.com")));
+        when(userService.countUsers(null)).thenReturn(1L);
+        when(userService.getUsers(null, "id", "asc", 0, 5))
+                .thenReturn(List.of(buildUser(1L, "Ivan", "Petrov", "ivan@example.com")));
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"))
-                .andExpect(model().attributeExists("users"));
+                .andExpect(model().attributeExists("users"))
+                .andExpect(model().attribute("currentPage", 1))
+                .andExpect(model().attribute("totalPages", 1));
+    }
+
+    @Test
+    void getAllUsersShouldApplySearchAndPaginationParameters() throws Exception {
+        when(userService.countUsers("anna")).thenReturn(6L);
+        when(userService.getUsers("anna", "surname", "desc", 1, 5))
+                .thenReturn(List.of(buildUser(2L, "Anna", "Smirnova", "anna@example.com")));
+
+        mockMvc.perform(get("/users")
+                        .param("q", "anna")
+                        .param("sort", "surname")
+                        .param("dir", "desc")
+                        .param("page", "2"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"))
+                .andExpect(model().attribute("searchTerm", "anna"))
+                .andExpect(model().attribute("sortBy", "surname"))
+                .andExpect(model().attribute("sortDirection", "desc"))
+                .andExpect(model().attribute("currentPage", 2))
+                .andExpect(model().attribute("totalPages", 2));
     }
 
     @Test

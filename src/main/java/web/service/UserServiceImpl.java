@@ -38,6 +38,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getUsers(String searchTerm, String sortBy, String sortDirection, int page, int size) {
+        logger.debug(
+                "Getting users with searchTerm={}, sortBy={}, sortDirection={}, page={}, size={}",
+                searchTerm,
+                sortBy,
+                sortDirection,
+                page,
+                size
+        );
+        return userDao.getUsers(searchTerm, sortBy, sortDirection, page, size);
+    }
+
+    @Override
+    public long countUsers(String searchTerm) {
+        logger.debug("Counting users with searchTerm={}", searchTerm);
+        return userDao.countUsers(searchTerm);
+    }
+
+    @Override
     public void addUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");

@@ -96,6 +96,20 @@ class UserDaoImplIT {
         assertTrue(userDao.findById(user.getId()).isEmpty());
     }
 
+    @Test
+    void getUsersShouldApplySearchSortingAndPagination() {
+        userDao.addUser(buildUser("Anna", "Smirnova", "anna.smirnova@example.com"));
+        userDao.addUser(buildUser("Anastasia", "Sidorova", "anastasia.sidorova@example.com"));
+        userDao.addUser(buildUser("Boris", "Petrov", "boris.petrov@example.com"));
+
+        assertEquals(2L, userDao.countUsers("an"));
+
+        var users = userDao.getUsers("an", "name", "asc", 0, 1);
+
+        assertEquals(1, users.size());
+        assertEquals("Anastasia", users.get(0).getName());
+    }
+
     private User buildUser(String name, String surname, String email) {
         User user = new User();
         user.setName(name);

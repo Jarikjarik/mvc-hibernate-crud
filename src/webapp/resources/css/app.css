@@ -80,6 +80,61 @@ h1, h2, p {
     color: var(--success-text);
 }
 
+.toolbar {
+    display: grid;
+    grid-template-columns: minmax(260px, 1.6fr) minmax(240px, 1fr) auto;
+    gap: 16px;
+    align-items: end;
+    padding: 18px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface-muted);
+}
+
+.toolbar-search,
+.toolbar-selects,
+.toolbar-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.toolbar-search,
+.toolbar-actions {
+    flex-direction: column;
+}
+
+.toolbar-selects > div {
+    flex: 1;
+}
+
+.toolbar-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.toolbar select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    font-size: 15px;
+}
+
+.toolbar select:focus {
+    outline: 2px solid rgba(31, 111, 235, 0.18);
+    border-color: var(--primary);
+}
+
+.list-summary {
+    margin-bottom: 16px;
+    color: var(--text-muted);
+}
+
 .table-wrapper {
     overflow-x: auto;
 }
@@ -102,6 +157,15 @@ thead th {
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--text-muted);
+}
+
+.sort-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.sort-link:hover {
+    color: var(--primary);
 }
 
 .actions {
@@ -151,6 +215,11 @@ thead th {
     background: #fff1f1;
     color: var(--danger);
     border: 1px solid #f1c3c3;
+}
+
+.button-disabled {
+    pointer-events: none;
+    opacity: 0.5;
 }
 
 .form-panel,
@@ -221,12 +290,40 @@ input:focus {
     border: 1px dashed var(--border);
 }
 
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.pagination-status {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
 @media (max-width: 900px) {
     .panel-header {
         flex-direction: column;
     }
 
+    .toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .toolbar-selects,
+    .toolbar-actions {
+        flex-direction: column;
+    }
+
     .form-grid {
         grid-template-columns: 1fr;
+    }
+
+    .pagination {
+        justify-content: stretch;
+        flex-direction: column;
+        align-items: stretch;
     }
 }

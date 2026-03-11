@@ -13,23 +13,59 @@
             <div>
                 <p class="eyebrow">Portfolio project</p>
                 <h1>User Directory</h1>
-                <p class="panel-subtitle">Manage employees with validation, audit fields and PostgreSQL persistence.</p>
+                <p class="panel-subtitle">Manage employees with validation, audit fields, search, pagination and PostgreSQL persistence.</p>
             </div>
             <a class="button button-primary" th:href="@{/users/new}">Add user</a>
         </div>
 
         <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
 
+        <form class="toolbar" method="get" th:action="@{/users}">
+            <div class="toolbar-search">
+                <label class="toolbar-label" for="q">Search directory</label>
+                <input id="q" name="q" type="text" placeholder="Search by name, surname or email"
+                       th:value="${searchTerm}">
+            </div>
+            <div class="toolbar-selects">
+                <div>
+                    <label class="toolbar-label" for="sort">Sort by</label>
+                    <select id="sort" name="sort">
+                        <option value="id" th:selected="${sortBy == 'id'}">ID</option>
+                        <option value="name" th:selected="${sortBy == 'name'}">Name</option>
+                        <option value="surname" th:selected="${sortBy == 'surname'}">Surname</option>
+                        <option value="email" th:selected="${sortBy == 'email'}">Email</option>
+                        <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Created</option>
+                        <option value="updatedAt" th:selected="${sortBy == 'updatedAt'}">Updated</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="toolbar-label" for="dir">Direction</label>
+                    <select id="dir" name="dir">
+                        <option value="asc" th:selected="${sortDirection == 'asc'}">Ascending</option>
+                        <option value="desc" th:selected="${sortDirection == 'desc'}">Descending</option>
+                    </select>
+                </div>
+            </div>
+            <div class="toolbar-actions">
+                <button class="button button-primary" type="submit">Apply</button>
+                <a class="button button-secondary" th:href="@{/users}">Reset</a>
+            </div>
+        </form>
+
+        <div class="list-summary">
+            <p th:text="${totalUsers == 0 ? 'No matching users found.' : 'Showing ' + users.size() + ' of ' + totalUsers + ' users.'}"></p>
+        </div>
+
         <div class="table-wrapper" th:if="${!users.isEmpty()}">
             <table>
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Email</th>
-                    <th>Created</th>
-                    <th>Updated</th>
+                    <th><a class="sort-link" th:href="@{/users(q=${searchTerm}, sort='id', dir=${sortBy == 'id' ? reverseSortDirection : 'asc'}, page=1)}">ID</a></th>
+                    <th><a class="sort-link" th:href="@{/users(q=${searchTerm}, sort='name', dir=${sortBy == 'name' ? reverseSortDirection : 'asc'}, page=1)}">Name</a></th>
+                    <th><a class="sort-link" th:href="@{/users(q=${searchTerm}, sort='surname', dir=${sortBy == 'surname' ? reverseSortDirection : 'asc'}, page=1)}">Surname</a></th>
+                    <th><a class="sort-link" th:href="@{/users(q=${searchTerm}, sort='email', dir=${sortBy == 'email' ? reverseSortDirection : 'asc'}, page=1)}">Email</a></th>
+                    <th><a class="sort-link" th:href="@{/users(q=${searchTerm}, sort='createdAt', dir=${sortBy == 'createdAt' ? reverseSortDirection : 'asc'}, page=1)}">Created</a></th>
+                    <th><a class="sort-link" th:href="@{/users(q=${searchTerm}, sort='updatedAt', dir=${sortBy == 'updatedAt' ? reverseSortDirection : 'asc'}, page=1)}">Updated</a></th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -56,9 +92,24 @@
             </table>
         </div>
 
+        <nav class="pagination" th:if="${totalPages > 1}">
+            <a class="button button-secondary"
+               th:classappend="${!hasPreviousPage} ? ' button-disabled'"
+               th:href="${hasPreviousPage} ? @{/users(q=${searchTerm}, sort=${sortBy}, dir=${sortDirection}, page=${previousPage})} : '#'}">
+                Previous
+            </a>
+            <span class="pagination-status"
+                  th:text="'Page ' + ${currentPage} + ' of ' + ${totalPages}"></span>
+            <a class="button button-secondary"
+               th:classappend="${!hasNextPage} ? ' button-disabled'"
+               th:href="${hasNextPage} ? @{/users(q=${searchTerm}, sort=${sortBy}, dir=${sortDirection}, page=${nextPage})} : '#'}">
+                Next
+            </a>
+        </nav>
+
         <div class="empty-state" th:if="${users.isEmpty()}">
-            <h2>No users yet</h2>
-            <p>Create the first record to populate the directory.</p>
+            <h2 th:text="${totalUsers == 0 and !#strings.isEmpty(searchTerm) ? 'Nothing matched your search' : 'No users yet'}"></h2>
+            <p th:text="${totalUsers == 0 and !#strings.isEmpty(searchTerm) ? 'Try a different search term or reset the filters.' : 'Create the first record to populate the directory.'}"></p>
         </div>
     </section>
 </main>

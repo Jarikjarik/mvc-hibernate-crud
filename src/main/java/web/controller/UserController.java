@@ -20,6 +20,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final int DEFAULT_PAGE_SIZE = 5;
 
     private final UserService userService;
 
@@ -29,9 +30,31 @@ public class UserController {
     }
 
     @GetMapping
-    public String getAllUsers(Model model) {
-        List<User> users = userService.getUsers();
+    public String getAllUsers(@RequestParam(value = "q", required = false) String searchTerm,
+                              @RequestParam(value = "sort", defaultValue = "id") String sortBy,
+                              @RequestParam(value = "dir", defaultValue = "asc") String sortDirection,
+                              @RequestParam(value = "page", defaultValue = "1") int page,
+                              Model model) {
+        int safePage = Math.max(page, 1);
+        long totalUsers = userService.countUsers(searchTerm);
+        int totalPages = Math.max(1, (int) Math.ceil((double) totalUsers / DEFAULT_PAGE_SIZE));
+        if (safePage > totalPages) {
+            safePage = totalPages;
+        }
+
+        List<User> users = userService.getUsers(searchTerm, sortBy, sortDirection, safePage - 1, DEFAULT_PAGE_SIZE);
         model.addAttribute("users", users);
+        model.addAttribute("searchTerm", searchTerm == null ? "" : searchTerm.trim());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("currentPage", safePage);
+        model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("hasPreviousPage", safePage > 1);
+        model.addAttribute("hasNextPage", safePage < totalPages);
+        model.addAttribute("previousPage", safePage - 1);
+        model.addAttribute("nextPage", safePage + 1);
+        model.addAttribute("reverseSortDirection", "asc".equalsIgnoreCase(sortDirection) ? "desc" : "asc");
         return "users";
     }
 

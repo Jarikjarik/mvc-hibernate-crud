@@ -2,6 +2,20 @@
 
 Portfolio web application for user management built with Spring MVC, Hibernate, Thymeleaf, Flyway and PostgreSQL.
 
+## Overview
+
+This project started as a basic educational CRUD app and was rebuilt into a more production-like portfolio application.
+
+It now demonstrates:
+
+- classic layered Spring MVC architecture
+- explicit database versioning with Flyway
+- PostgreSQL-based persistence
+- MVC, service and integration test coverage
+- reproducible local setup with Maven Wrapper and Docker Compose
+- CI validation with GitHub Actions
+- real user-list UX with search, sorting and pagination
+
 ## Features
 
 - layered architecture: controller, service, DAO
@@ -11,6 +25,8 @@ Portfolio web application for user management built with Spring MVC, Hibernate, 
 - Flyway database migrations
 - centralized MVC error handling
 - Thymeleaf-based UI for listing, creating, editing and deleting users
+- user search, sorting and pagination
+- seed data and explicit local reset flow
 
 ## Stack
 
@@ -47,6 +63,36 @@ src/webapp
 scripts
   reset-db.sql
 ```
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A["Browser / Thymeleaf UI"] --> B["Spring MVC Controllers"]
+    B --> C["Service Layer"]
+    C --> D["DAO Layer"]
+    D --> E["Hibernate / JPA EntityManager"]
+    E --> F["PostgreSQL"]
+    G["Flyway Migrations"] --> F
+```
+
+Request handling responsibilities:
+
+- controllers manage HTTP flow, validation feedback and redirects
+- services hold business rules and guard clauses
+- DAO classes execute persistence queries
+- Flyway owns schema evolution instead of Hibernate auto-mutation
+
+## User flows
+
+Main pages and actions:
+
+- `GET /users` - paginated user directory with search and sorting
+- `GET /users/new` - create form
+- `POST /users` - create user
+- `GET /users/edit?id={id}` - edit form
+- `POST /users/edit` - update user
+- `POST /users/delete` - remove user
 
 ## Database configuration
 
@@ -134,6 +180,7 @@ Covered scenarios include:
 - service-layer behavior
 - MVC controller flow
 - root redirect behavior
+- search, sorting and pagination flow
 
 Optional PostgreSQL integration tests are also available through Testcontainers:
 
@@ -157,6 +204,17 @@ GitHub Actions runs the following on every push and pull request to `main`:
 - project build
 - unit and MVC test suite
 - PostgreSQL integration tests with Testcontainers
+
+## Portfolio value
+
+Signals that this is no longer a tutorial-only CRUD:
+
+- PostgreSQL replaced the original training setup
+- schema changes are handled through Flyway migrations
+- local environment is reproducible with Maven Wrapper and Docker Compose
+- CI verifies build and tests on every push and pull request
+- DAO behavior is checked against PostgreSQL with Testcontainers
+- UI includes filtering, sorting, pagination and user feedback states
 
 ## Flyway migrations
 
@@ -211,7 +269,10 @@ The project has been upgraded from a basic educational CRUD toward a more produc
 - optional PostgreSQL integration tests with Testcontainers
 - GitHub Actions build validation
 - containerized local environment via Docker Compose
+- searchable and paginated user directory UI
 
 ## Next improvements
 
-- add search, sorting and pagination
+- add screenshots or demo GIFs to the repository
+- add bulk actions or richer directory filters
+- add deployment instructions for a public demo environment

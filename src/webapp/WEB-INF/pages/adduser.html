@@ -21,18 +21,21 @@
             <label class="field">
                 <span>Name</span>
                 <input type="text" th:field="*{name}" placeholder="John">
+                <small class="field-hint">Use 2 to 30 characters.</small>
                 <small class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
             </label>
 
             <label class="field">
                 <span>Surname</span>
                 <input type="text" th:field="*{surname}" placeholder="Doe">
+                <small class="field-hint">Use a real last name for directory clarity.</small>
                 <small class="error-message" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></small>
             </label>
 
             <label class="field field-full">
                 <span>Email</span>
                 <input type="email" th:field="*{email}" placeholder="john.doe@company.com">
+                <small class="field-hint">Email must be unique and is used as the main identity field.</small>
                 <small class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
             </label>
 

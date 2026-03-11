@@ -10,6 +10,7 @@
 <main class="page-shell">
     <section class="panel error-panel">
         <p class="eyebrow">Request failed</p>
+        <div class="status-pill status-pill-danger">Action interrupted</div>
         <h1>Unable to complete the action</h1>
         <p class="panel-subtitle" th:text="${errorMessage}">Something went wrong.</p>
         <a class="button button-primary" th:href="@{/users}">Return to user list</a>

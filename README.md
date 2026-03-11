@@ -1,47 +1,93 @@
 # MVC Hibernate CRUD
 
-Portfolio web application for user management built with Spring MVC, Hibernate, Thymeleaf, Flyway and PostgreSQL.
+[![Java 17](https://img.shields.io/badge/Java-17-2f5d8a?style=flat-square)](https://www.oracle.com/java/)
+[![Spring MVC](https://img.shields.io/badge/Spring%20MVC-5.3-6db33f?style=flat-square)](https://spring.io/projects/spring-framework)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791?style=flat-square)](https://www.postgresql.org/)
+[![Flyway](https://img.shields.io/badge/Flyway-11-cc0200?style=flat-square)](https://flywaydb.org/)
+[![Testcontainers](https://img.shields.io/badge/Testcontainers-1.20-2496ed?style=flat-square)](https://testcontainers.com/)
+[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088ff?style=flat-square)](https://github.com/Jarikjarik/mvc-hibernate-crud/actions)
 
-## Overview
+Production-like portfolio CRUD application for user management built with Spring MVC, Hibernate, Thymeleaf, PostgreSQL, Flyway, Docker and GitHub Actions.
 
-This project started as a basic educational CRUD app and was rebuilt into a more production-like portfolio application.
+## Why this project stands out
 
-It now demonstrates:
+- layered architecture with controller, service and DAO separation
+- PostgreSQL persistence with Flyway-managed schema migrations
+- HikariCP connection pooling instead of a demo-only datasource setup
+- MVC, service and PostgreSQL integration tests
+- Dockerized local environment and Maven Wrapper for reproducible setup
+- GitHub Actions CI with automated build and test verification
+- polished UI with search, sorting, pagination and validation feedback
 
-- classic layered Spring MVC architecture
-- explicit database versioning with Flyway
-- PostgreSQL-based persistence
-- HikariCP connection pooling
-- MVC, service and integration test coverage
-- reproducible local setup with Maven Wrapper and Docker Compose
-- CI validation with GitHub Actions
-- real user-list UX with search, sorting and pagination
+## Screenshots
+
+### User directory
+
+![User directory](docs/screenshots/user-directory.png)
+
+### Create user
+
+![Create user](docs/screenshots/create-user.png)
+
+### Edit user
+
+![Edit user](docs/screenshots/edit-user.png)
 
 ## Features
 
-- layered architecture: controller, service, DAO
-- server-side validation for user forms
-- unique email validation before persistence
-- audit fields: `createdAt`, `updatedAt`
-- Flyway database migrations
-- centralized MVC error handling
-- Thymeleaf-based UI for listing, creating, editing and deleting users
-- user search, sorting and pagination
-- seed data and explicit local reset flow
+- create, edit and delete users through a Thymeleaf-based web UI
+- validate user input on the server side
+- enforce unique email addresses before persistence
+- track `createdAt` and `updatedAt` audit fields
+- search users by name, surname or email
+- sort user list by key fields
+- paginate the user directory
+- handle application errors through centralized MVC exception handling
+- seed demo data and reset the local database explicitly
 
-## Stack
+## Tech stack
 
-- Java 17+
+- Java 17
 - Spring MVC 5
 - Hibernate ORM 5
 - Thymeleaf
 - PostgreSQL
 - Flyway
+- HikariCP
 - Maven Wrapper
 - Docker Compose
-- Maven WAR packaging
-- JUnit 5 and Mockito
-- GitHub Actions CI
+- JUnit 5
+- Mockito
+- Testcontainers
+- GitHub Actions
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A["Browser / Thymeleaf UI"] --> B["Spring MVC Controllers"]
+    B --> C["Service Layer"]
+    C --> D["DAO Layer"]
+    D --> E["Hibernate / JPA EntityManager"]
+    E --> F["PostgreSQL"]
+    G["Flyway Migrations"] --> F
+```
+
+Responsibilities by layer:
+
+- controllers handle HTTP flow, validation feedback and redirects
+- services contain business rules and guard clauses
+- DAO classes execute persistence queries
+- Flyway owns schema evolution instead of Hibernate schema mutation
+
+## User flows
+
+- `GET /users` - user directory with search, sorting and pagination
+- `GET /users/new` - create form
+- `POST /users` - create user
+- `GET /users/edit?id={id}` - edit form
+- `POST /users/edit` - update user
+- `POST /users/delete` - delete user
 
 ## Project structure
 
@@ -66,53 +112,22 @@ scripts
   reset-db.sql
 ```
 
-## Architecture
+## Configuration
 
-```mermaid
-flowchart LR
-    A["Browser / Thymeleaf UI"] --> B["Spring MVC Controllers"]
-    B --> C["Service Layer"]
-    C --> D["DAO Layer"]
-    D --> E["Hibernate / JPA EntityManager"]
-    E --> F["PostgreSQL"]
-    G["Flyway Migrations"] --> F
-```
-
-Request handling responsibilities:
-
-- controllers manage HTTP flow, validation feedback and redirects
-- services hold business rules and guard clauses
-- DAO classes execute persistence queries
-- Flyway owns schema evolution instead of Hibernate auto-mutation
-
-## User flows
-
-Main pages and actions:
-
-- `GET /users` - paginated user directory with search and sorting
-- `GET /users/new` - create form
-- `POST /users` - create user
-- `GET /users/edit?id={id}` - edit form
-- `POST /users/edit` - update user
-- `POST /users/delete` - remove user
-
-## Database configuration
-
-Tracked fallback configuration is stored in `src/main/resources/db.properties`.
-It contains safe placeholder values only.
+Tracked fallback configuration is stored in `src/main/resources/db.properties` and contains only safe placeholder values.
 
 For local development you can either:
 
 - provide environment variables
 - or copy `src/main/resources/db.local.properties.example` to `src/main/resources/db.local.properties`
 
-Configuration is resolved in this order:
+Configuration priority:
 
-- environment variables
-- local untracked `db.local.properties`
-- tracked placeholder `db.properties`
+1. environment variables
+2. local untracked `db.local.properties`
+3. tracked placeholder `db.properties`
 
-Supported overrides for Docker, CI or local shell setup:
+Supported overrides:
 
 - `DB_DRIVER`
 - `DB_URL`
@@ -126,14 +141,12 @@ Supported overrides for Docker, CI or local shell setup:
 - `HIBERNATE_FORMAT_SQL`
 - `HIBERNATE_DIALECT`
 
-For local machine setup use `src/main/resources/db.local.properties.example` as a template.
-
 ## Run locally
 
 1. Make sure PostgreSQL is running and the database `mvc-hibernate-crud` exists.
 2. Ensure the user `app_user` with password `12345` has access to that database.
 3. Copy `src/main/resources/db.local.properties.example` to `src/main/resources/db.local.properties`.
-4. Build the project with Maven Wrapper:
+4. Build the project:
 
 ```bash
 ./mvnw clean package
@@ -145,7 +158,7 @@ For Windows PowerShell:
 .\mvnw.cmd clean package
 ```
 
-5. Deploy the generated WAR from `target/mvc-hibernate-crud.war` to your servlet container.
+5. Deploy `target/mvc-hibernate-crud.war` to your servlet container.
 6. Open:
 
 ```text
@@ -173,23 +186,9 @@ The Docker setup runs:
 - Flyway migrations on application startup
 - Tomcat with the built WAR deployed as the root app
 
-## Screenshots
-
-### User directory
-
-![User directory](docs/screenshots/user-directory.png)
-
-### Create user
-
-![Create user](docs/screenshots/create-user.png)
-
-### Edit user
-
-![Edit user](docs/screenshots/edit-user.png)
-
 ## Testing
 
-Run the automated test suite with Maven Wrapper:
+Run the main automated test suite:
 
 ```bash
 ./mvnw test
@@ -208,7 +207,7 @@ Covered scenarios include:
 - root redirect behavior
 - search, sorting and pagination flow
 
-Optional PostgreSQL integration tests are also available through Testcontainers:
+Run PostgreSQL integration tests with Testcontainers:
 
 ```bash
 ./mvnw verify -Pintegration-tests
@@ -231,6 +230,28 @@ GitHub Actions runs the following on every push and pull request to `main`:
 - unit and MVC test suite
 - PostgreSQL integration tests with Testcontainers
 
+## Database lifecycle
+
+Schema migrations are stored in `src/main/resources/db/migration`.
+
+Current migrations:
+
+- `V1__create_users_table.sql` - creates the `users` table and indexes
+- `V2__seed_users.sql` - inserts demo users for local development
+
+Reset only table contents while keeping the schema:
+
+```bash
+psql -U app_user -d mvc-hibernate-crud -f scripts/reset-db.sql
+```
+
+Reset the entire Docker database volume:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
 ## Portfolio value
 
 Signals that this is no longer a tutorial-only CRUD:
@@ -241,62 +262,7 @@ Signals that this is no longer a tutorial-only CRUD:
 - local environment is reproducible with Maven Wrapper and Docker Compose
 - CI verifies build and tests on every push and pull request
 - DAO behavior is checked against PostgreSQL with Testcontainers
-- UI includes filtering, sorting, pagination and user feedback states
-
-## Flyway migrations
-
-Schema migrations are stored in:
-
-```text
-src/main/resources/db/migration
-```
-
-Current migrations:
-
-- `V1__create_users_table.sql` - creates the `users` table and indexes
-- `V2__seed_users.sql` - inserts demo users for local development
-
-## Data lifecycle
-
-By default the application keeps data between restarts.
-This is the recommended behavior for the portfolio version of the project.
-
-For local development and demos you have two reset options.
-
-Reset only table contents while keeping schema:
-
-```bash
-psql -U app_user -d mvc-hibernate-crud -f scripts/reset-db.sql
-```
-
-After that the application starts with an empty `users` table.
-
-Reset the entire Docker database volume:
-
-```bash
-docker compose down -v
-docker compose up --build
-```
-
-That recreates PostgreSQL from scratch and reapplies all migrations, including demo seed data.
-
-## Current status
-
-The project has been upgraded from a basic educational CRUD toward a more production-like portfolio application:
-
-- PostgreSQL configured instead of MySQL
-- cleaner Spring configuration
-- better validation and user feedback
-- audit fields and unique email support
-- improved UI and error handling
-- explicit database migration instead of implicit schema mutation
-- managed seed data and explicit database reset flow
-- reproducible build via Maven Wrapper
-- automated test coverage for service and MVC layers
-- optional PostgreSQL integration tests with Testcontainers
-- GitHub Actions build validation
-- containerized local environment via Docker Compose
-- searchable and paginated user directory UI
+- UI includes filtering, sorting, pagination and validation feedback
 
 ## Next improvements
 
